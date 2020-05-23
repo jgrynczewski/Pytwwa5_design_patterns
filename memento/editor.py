@@ -12,8 +12,11 @@ class Editor:
         self.prev_content.append(EditorState(self.__content))
         self.__content = value
 
-    def undo(self):
-        self.__content = self.prev_content.pop().content
+    def create_state(self):
+        return EditorState(self.__content)
+
+    def restore(self, state):
+        self.__content = state.content
 
 
 class EditorState:
@@ -24,10 +27,28 @@ class EditorState:
     def content(self):
         return self.__content
 
+class History:
+    def __init__(self):
+        self.__states = []
+
+    def push(self, state: EditorState):
+        self.__states.append(state)
+
+    def pop(self) -> EditorState:
+        return self.__states.pop()
+
 e = Editor()
+h = History()
+
 e.content = "a"
+h.push(e.create_state())
+
 e.content = "b"
+h.push(e.create_state())
+
 e.content = "c"
-e.undo()
-e.undo()
+
+e.restore(h.pop())
+e.restore(h.pop())
+
 print(e.content)
