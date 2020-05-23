@@ -9,12 +9,20 @@ class Editor:
 
     @content.setter
     def content(self, value):
-        self.prev_content.append(self.__content)
+        self.prev_content.append(EditorState(self.__content))
         self.__content = value
 
     def undo(self):
-        self.__content = self.prev_content.pop()
+        self.__content = self.prev_content.pop().content
 
+
+class EditorState:
+    def __init__(self, content):
+        self.__content = content
+
+    @property
+    def content(self):
+        return self.__content
 
 e = Editor()
 e.content = "a"
