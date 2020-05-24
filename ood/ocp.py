@@ -60,13 +60,16 @@ class Specificaion:
     def is_satisfied(self, item):
         pass
 
-class Filter:
+class Filter():
     def filter(self, items, specification):
         pass
 
 class ColorSpecification(Specificaion):
     def __init__(self, color):
         self.color = color
+
+    def __and__(self,other):
+        return AndSpecification(self, other)
 
     def is_satisfied(self, item):
         return item.color == self.color
@@ -76,6 +79,9 @@ class BetterFilter(Filter):
         for item in items:
             if spec.is_satisfied(item):
                 yield item
+
+
+# Kod kliencki
 
 products = [apple, tree, house]
 
@@ -110,10 +116,7 @@ class AndSpecification(Specificaion):
         return self.spec1.is_satisfied(item) and self.spec2.is_satisfied(item)
 
 print("Producty zielone i duże")
-large_blue = AndSpecification(
-    ColorSpecification(Color.BLUE),
-    SizeSpecification(Size.LARGE)
-)
+large_blue = SizeSpecification(Size.LARGE) and ColorSpecification(Color.BLUE)
 
 for p in bf.filter(products, large_blue):
     print(f"{p.name} jest niebieski i duży")
